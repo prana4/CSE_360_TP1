@@ -539,7 +539,46 @@ public class Database {
 	    }
 		return;
 	}
-	
+
+	/*******
+	 * <p> Method: boolean deleteUser(String username) </p>
+	 * 
+	 * <p> Description: Remove a user account.</p>
+	 * 
+	 * @param username is the username of the account to be deleted.
+	 *  
+	 */
+	// Remove an invitation using an email address once the user account has been setup
+	public boolean deleteUser(String username) {
+	    // Validate input
+	    if (username == null || username.trim().isEmpty()) {
+	        System.err.println("Error: Username cannot be null or empty");
+	        return false;
+	    }
+	    
+	    String sql = "DELETE FROM userDB WHERE userName = ?";
+	    
+	    try {
+	        // Use the existing connection that's already established
+	        PreparedStatement pstmt = connection.prepareStatement(sql);
+	        pstmt.setString(1, username.trim());
+	        int rowsAffected = pstmt.executeUpdate();
+	        pstmt.close();
+	        
+	        if (rowsAffected > 0) {
+	            System.out.println("User '" + username + "' successfully deleted from userDB");
+	            return true;
+	        } else {
+	            System.out.println("No user found with username: " + username);
+	            return false;
+	        }
+	        
+	    } catch (SQLException e) {
+	        System.err.println("SQL Error deleting user '" + username + "': " + e.getMessage());
+	        e.printStackTrace();
+	        return false;
+	    }
+	}
 	
 	/*******
 	 * <p> Method: String getFirstName(String username) </p>
